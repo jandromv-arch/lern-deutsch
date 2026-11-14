@@ -24,7 +24,7 @@ export function ReminderButton() {
         <input
           id="reminder-time"
           type="time"
-          value={reminderTime}
+          value={reminderTime || "19:00"}
           onChange={(e) => e.target.value && setReminderTime(e.target.value)}
           className="rounded-lg border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 px-2 py-1"
         />

@@ -6,6 +6,8 @@ export function buildDailyReminderICS(hour: number, minute: number): string {
   const date = `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}`;
   const time = `${pad(hour)}${pad(minute)}00`;
   const stamp = `${date}T${time}`;
+  // RFC 5545: DTSTAMP must be UTC (trailing Z), unlike DTSTART which stays floating local time.
+  const dtstamp = new Date().toISOString().replace(/[-:]/g, "").slice(0, 15) + "Z";
   return [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
@@ -13,7 +15,7 @@ export function buildDailyReminderICS(hour: number, minute: number): string {
     "CALSCALE:GREGORIAN",
     "BEGIN:VEVENT",
     "UID:lern-deutsch-daily@jandromv-arch",
-    `DTSTAMP:${stamp}`,
+    `DTSTAMP:${dtstamp}`,
     `DTSTART:${stamp}`,
     "RRULE:FREQ=DAILY",
     "SUMMARY:Lern Deutsch — leçon du jour",
