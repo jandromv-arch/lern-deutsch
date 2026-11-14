@@ -1,10 +1,14 @@
 import type { VocabItem } from "../content/types";
 import { GenderWord } from "./GenderWord";
+import { AudioButton } from "./AudioButton";
 
 export function Flashcard({ item, onResult }: { item: VocabItem; pool: VocabItem[]; onResult: (c: boolean) => void }) {
   return (
     <div className="p-6 text-center space-y-4">
-      <div className="text-3xl"><GenderWord item={item} /></div>
+      <div className="text-3xl flex items-center justify-center gap-2">
+        <GenderWord item={item} />
+        <AudioButton text={item.example ? `${item.de}. ${item.example.de}` : item.de} />
+      </div>
       <div className="text-neutral-500">{item.fr}</div>
       {item.example && <div className="text-sm italic text-neutral-400">{item.example.de}<br />{item.example.fr}</div>}
       <div className="flex gap-3 pt-4">

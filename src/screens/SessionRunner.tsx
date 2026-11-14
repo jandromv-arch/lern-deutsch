@@ -4,6 +4,7 @@ import type { Step } from "../engine/session";
 import type { VocabItem } from "../content/types";
 import { buildFill } from "../engine/exercises";
 import { useProgress } from "../store/useProgress";
+import { playCorrect, playWrong } from "../engine/sfx";
 import { today } from "../app/today";
 import { Flashcard } from "../components/Flashcard";
 import { Qcm } from "../components/Qcm";
@@ -54,6 +55,10 @@ export function SessionRunner({ steps, itemsById, pool, onDone }: {
     const next = { correct: stats.correct + (correct ? 1 : 0), total: stats.total + 1 };
     setStats(next);
     setFlash(correct);
+    if (useProgress.getState().soundOn) {
+      if (correct) playCorrect();
+      else playWrong();
+    }
     if (navigator.vibrate) navigator.vibrate(correct ? 20 : [10, 30, 10]);
     timer.current = setTimeout(() => {
       timer.current = null;
