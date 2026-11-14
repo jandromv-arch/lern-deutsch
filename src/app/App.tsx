@@ -5,6 +5,8 @@ import { Lesson } from "../screens/Lesson";
 import { Review } from "../screens/Review";
 import { Daily } from "../screens/Daily";
 import { Progress } from "../screens/Progress";
+import { Dialogue } from "../screens/Dialogue";
+import { DialoguePlay } from "../screens/DialoguePlay";
 
 export function App() {
   return (
@@ -15,6 +17,8 @@ export function App() {
           <Route path="/lesson/:id" element={<Lesson />} />
           <Route path="/daily" element={<Daily />} />
           <Route path="/review" element={<Review />} />
+          <Route path="/dialogues" element={<Dialogue />} />
+          <Route path="/dialogues/:id" element={<DialoguePlay />} />
           <Route path="/progress" element={<Progress />} />
         </Route>
       </Routes>

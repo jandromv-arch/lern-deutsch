@@ -37,6 +37,9 @@ export function Home() {
         <div className="font-bold text-lg">Leçon du jour</div>
         <div className="text-sm opacity-90">{plan.reviewIds.length} à réviser · {plan.newIds.length} nouveaux</div>
       </Link>
+      <Link to="/dialogues" className="block text-center p-3 rounded-2xl bg-white dark:bg-neutral-800 shadow-sm font-semibold">
+        Dialogues 💬
+      </Link>
       <div className="grid grid-cols-2 gap-3">
         {course.lessons.map((l) => {
           const mastered = l.items.filter((it) => items[it.id] && isMastered(items[it.id])).length;
