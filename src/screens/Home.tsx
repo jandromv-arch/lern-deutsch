@@ -5,12 +5,14 @@ import { today } from "../app/today";
 import { LevelBar } from "../components/LevelBar";
 import { DailyRing } from "../components/DailyRing";
 import { HeaderControls } from "../components/HeaderControls";
+import { buildDailyPlan } from "../engine/daily";
 import { isMastered } from "../engine/leitner";
 
 export function Home() {
   const { xp, streak, items, dueItemIds, dailyGoal, answeredToday } = useProgress();
   const started = Object.keys(items);
   const dueCount = dueItemIds(started, today()).length;
+  const plan = buildDailyPlan(course, { items }, today());
   return (
     <div className="p-4 space-y-5">
       <header className="space-y-2">
@@ -31,6 +33,10 @@ export function Home() {
           </Link>
         )}
       </header>
+      <Link to="/daily" className="block text-center p-4 rounded-2xl bg-accent text-white shadow">
+        <div className="font-bold text-lg">Leçon du jour</div>
+        <div className="text-sm opacity-90">{plan.reviewIds.length} à réviser · {plan.newIds.length} nouveaux</div>
+      </Link>
       <div className="grid grid-cols-2 gap-3">
         {course.lessons.map((l) => {
           const mastered = l.items.filter((it) => items[it.id] && isMastered(items[it.id])).length;

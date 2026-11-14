@@ -3,6 +3,7 @@ import { Layout } from "./Layout";
 import { Home } from "../screens/Home";
 import { Lesson } from "../screens/Lesson";
 import { Review } from "../screens/Review";
+import { Daily } from "../screens/Daily";
 import { Progress } from "../screens/Progress";
 
 export function App() {
@@ -12,6 +13,7 @@ export function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/lesson/:id" element={<Lesson />} />
+          <Route path="/daily" element={<Daily />} />
           <Route path="/review" element={<Review />} />
           <Route path="/progress" element={<Progress />} />
         </Route>
