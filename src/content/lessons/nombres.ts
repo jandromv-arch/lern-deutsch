@@ -1,0 +1,33 @@
+import type { Lesson } from "../types";
+
+export const nombres: Lesson = {
+  id: "nombres",
+  title: "Les nombres",
+  emoji: "🔢",
+  items: [
+    { id: "nombres-01", de: "eins", fr: "un", gender: null },
+    { id: "nombres-02", de: "zwei", fr: "deux", gender: null },
+    { id: "nombres-03", de: "drei", fr: "trois", gender: null },
+    { id: "nombres-04", de: "vier", fr: "quatre", gender: null },
+    { id: "nombres-05", de: "fünf", fr: "cinq", gender: null },
+    { id: "nombres-06", de: "sechs", fr: "six", gender: null },
+    { id: "nombres-07", de: "sieben", fr: "sept", gender: null },
+    { id: "nombres-08", de: "acht", fr: "huit", gender: null },
+    { id: "nombres-09", de: "neun", fr: "neuf", gender: null },
+    { id: "nombres-10", de: "zehn", fr: "dix", gender: null },
+    { id: "nombres-11", de: "elf", fr: "onze", gender: null },
+    { id: "nombres-12", de: "zwölf", fr: "douze", gender: null },
+    { id: "nombres-13", de: "dreizehn", fr: "treize", gender: null },
+    { id: "nombres-14", de: "zwanzig", fr: "vingt", gender: null },
+    { id: "nombres-15", de: "dreißig", fr: "trente", gender: null },
+    { id: "nombres-16", de: "fünfzig", fr: "cinquante", gender: null },
+    { id: "nombres-17", de: "hundert", fr: "cent", gender: null,
+      example: { de: "Das kostet hundert Euro.", fr: "Cela coûte cent euros." } },
+    { id: "nombres-18", de: "tausend", fr: "mille", gender: null,
+      example: { de: "Tausend Dank!", fr: "Mille mercis !" } },
+    { id: "nombres-19", de: "null", fr: "zéro", gender: null,
+      example: { de: "Das Ergebnis ist null.", fr: "Le résultat est zéro." } },
+    { id: "nombres-20", de: "die Zahl", fr: "le nombre / le chiffre", gender: "die",
+      example: { de: "Zehn ist eine Zahl.", fr: "Dix est un nombre." } },
+  ],
+};
