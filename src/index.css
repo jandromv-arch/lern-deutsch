@@ -3,4 +3,12 @@
 @tailwind utilities;
 
 html, body, #root { height: 100%; }
-body { @apply bg-amber-50 text-neutral-900; }
+body {
+  @apply bg-amber-50 text-neutral-900;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+/* iPhone safe areas (standalone / notch / home indicator) */
+.safe-top { padding-top: env(safe-area-inset-top); }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
