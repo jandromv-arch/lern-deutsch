@@ -14,11 +14,11 @@ export function WordOrder({ item, onResult }: { item: VocabItem; pool: VocabItem
   return (
     <div className="p-6 space-y-4">
       <div className="text-sm text-neutral-500 text-center">{o.promptFr}</div>
-      <div className="min-h-12 flex flex-wrap gap-2 justify-center border-b pb-2">
+      <div className="min-h-12 flex flex-wrap gap-2 justify-center border-b dark:border-neutral-700 pb-2">
         {answer.map((w, i) => <span key={i} className="px-3 py-1 rounded-lg bg-accent text-white">{w}</span>)}
       </div>
       <div className="flex flex-wrap gap-2 justify-center">
-        {bank.map((w, i) => <button key={i} onClick={() => take(i)} className="px-3 py-1 rounded-lg bg-white border">{w}</button>)}
+        {bank.map((w, i) => <button key={i} onClick={() => take(i)} className="px-3 py-1 rounded-lg bg-white dark:bg-neutral-800 border dark:border-neutral-700">{w}</button>)}
       </div>
       <button onClick={check} disabled={bank.length > 0}
         className="w-full py-3 rounded-xl bg-accent text-white disabled:opacity-40">Vérifier</button>

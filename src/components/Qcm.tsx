@@ -19,10 +19,10 @@ export function Qcm({ item, pool, onResult }: { item: VocabItem; pool: VocabItem
       </div>
       <div className="grid gap-3">
         {q.options.map((opt) => {
-          const state = chosen && (opt === q.answer ? "bg-good text-white" : opt === chosen ? "bg-bad text-white" : "bg-white");
+          const state = chosen && (opt === q.answer ? "bg-good text-white" : opt === chosen ? "bg-bad text-white" : "bg-white dark:bg-neutral-800 dark:border-neutral-700");
           return (
             <button key={opt} onClick={() => pick(opt)}
-              className={`py-3 rounded-xl border ${state || "bg-white"}`}>{opt}</button>
+              className={`py-3 rounded-xl border ${state || "bg-white dark:bg-neutral-800 dark:border-neutral-700"}`}>{opt}</button>
           );
         })}
       </div>

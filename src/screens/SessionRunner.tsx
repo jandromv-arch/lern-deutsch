@@ -70,7 +70,7 @@ export function SessionRunner({ steps, itemsById, pool, onDone }: {
 
   return (
     <div className="relative">
-      <div className="h-1 bg-neutral-200">
+      <div className="h-1 bg-neutral-200 dark:bg-neutral-700">
         <div className="h-1 bg-accent transition-all" style={{ width: `${(i / steps.length) * 100}%` }} />
       </div>
       {flash !== null && (

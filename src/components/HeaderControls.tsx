@@ -1,4 +1,5 @@
 import { useProgress } from "../store/useProgress";
+import { applyTheme } from "../app/theme";
 
 function prefersDark(): boolean {
   return typeof window !== "undefined" && typeof window.matchMedia === "function"
@@ -19,7 +20,7 @@ export function HeaderControls() {
         {soundOn ? "🔊" : "🔇"}
       </button>
       <button type="button" className={btn} aria-label="Thème"
-        onClick={() => setThemePref(isDark ? "light" : "dark")}>
+        onClick={() => { const next = isDark ? "light" : "dark"; setThemePref(next); applyTheme(next); }}>
         {isDark ? "☀️" : "🌙"}
       </button>
     </div>

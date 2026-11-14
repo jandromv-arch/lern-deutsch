@@ -21,7 +21,7 @@ export function FillBlank({ item, pool, onResult }: { item: VocabItem; pool: Voc
       <div className="flex flex-wrap gap-2 justify-center">
         {f.options.map((opt) => (
           <button key={opt} onClick={() => pick(opt)}
-            className={`px-4 py-2 rounded-xl border ${chosen && opt === f.answer ? "bg-good text-white" : chosen === opt ? "bg-bad text-white" : "bg-white"}`}>{opt}</button>
+            className={`px-4 py-2 rounded-xl border ${chosen && opt === f.answer ? "bg-good text-white" : chosen === opt ? "bg-bad text-white" : "bg-white dark:bg-neutral-800 dark:border-neutral-700"}`}>{opt}</button>
         ))}
       </div>
     </div>

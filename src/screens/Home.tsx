@@ -42,7 +42,7 @@ export function Home() {
           const mastered = l.items.filter((it) => items[it.id] && isMastered(items[it.id])).length;
           return (
             <Link key={l.id} to={`/lesson/${l.id}`}
-              className="p-4 rounded-2xl bg-white shadow-sm flex flex-col gap-1">
+              className="p-4 rounded-2xl bg-white dark:bg-neutral-800 shadow-sm flex flex-col gap-1">
               <div className="text-2xl">{l.emoji}</div>
               <div className="font-semibold text-sm">{l.title}</div>
               <div className="text-xs text-neutral-400">{mastered}/{l.items.length} maîtrisés</div>

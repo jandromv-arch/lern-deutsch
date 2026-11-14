@@ -9,7 +9,7 @@ export function LevelBar({ xp }: { xp: number }) {
         <span className="font-bold">{lvl.label}</span>
         <span>{xp} XP</span>
       </div>
-      <div className="h-2 bg-neutral-200 rounded">
+      <div className="h-2 bg-neutral-200 dark:bg-neutral-700 rounded">
         <div className="h-2 bg-accent rounded" style={{ width: `${pct}%` }} />
       </div>
     </div>
