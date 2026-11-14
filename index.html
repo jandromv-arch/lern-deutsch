@@ -13,6 +13,17 @@
     <meta name="apple-mobile-web-app-title" content="Lern Deutsch" />
     <meta name="description" content="Apprends le vocabulaire allemand — pour francophones." />
     <title>Lern Deutsch</title>
+    <script>
+      // Apply theme before paint to avoid a light flash on dark cold-load.
+      try {
+        var raw = localStorage.getItem('lern-deutsch-v1');
+        var pref = raw ? (JSON.parse(raw).state || {}).themePref : 'system';
+        var dark = pref === 'dark' ||
+          ((!pref || pref === 'system') &&
+            window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (dark) document.documentElement.classList.add('dark');
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>
