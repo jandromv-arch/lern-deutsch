@@ -1,6 +1,6 @@
 import type { VocabItem } from "../content/types";
 
-export type ExerciseType = "flashcard" | "qcm" | "fill" | "order";
+export type ExerciseType = "flashcard" | "qcm" | "fill" | "order" | "type";
 
 function shuffle<T>(arr: T[], rand: () => number): T[] {
   const a = [...arr];
@@ -76,4 +76,20 @@ export interface Order { tiles: string[]; solution: string[]; promptFr: string }
 export function buildOrder(item: VocabItem, rand: () => number = Math.random): Order {
   const solution = (item.example?.de ?? item.de).split(/\s+/);
   return { tiles: shuffle(solution, rand), solution, promptFr: item.example?.fr ?? item.fr };
+}
+
+export function normalizeGerman(s: string): string {
+  return s.toLowerCase().trim().replace(/\s+/g, " ")
+    .replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss")
+    .replace(/[.,!?;:]/g, "");
+}
+
+export interface Type { promptFr: string; answer: string }
+
+export function buildType(item: VocabItem): Type {
+  return { promptFr: item.fr, answer: item.de };
+}
+
+export function checkTyped(input: string, answer: string): boolean {
+  return normalizeGerman(input) === normalizeGerman(answer);
 }

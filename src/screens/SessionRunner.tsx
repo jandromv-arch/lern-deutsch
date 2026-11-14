@@ -10,10 +10,11 @@ import { Flashcard } from "../components/Flashcard";
 import { Qcm } from "../components/Qcm";
 import { FillBlank } from "../components/FillBlank";
 import { WordOrder } from "../components/WordOrder";
+import { TypeInput } from "../components/TypeInput";
 
 export interface SessionStats { correct: number; total: number; xpGained: number }
 
-const COMP = { flashcard: Flashcard, qcm: Qcm, fill: FillBlank, order: WordOrder };
+const COMP = { flashcard: Flashcard, qcm: Qcm, fill: FillBlank, order: WordOrder, type: TypeInput };
 
 export function SessionRunner({ steps, itemsById, pool, onDone }: {
   steps: Step[];
