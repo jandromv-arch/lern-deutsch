@@ -3,10 +3,12 @@ import { course } from "../content/course";
 import { useProgress } from "../store/useProgress";
 import { today } from "../app/today";
 import { LevelBar } from "../components/LevelBar";
+import { DailyRing } from "../components/DailyRing";
+import { HeaderControls } from "../components/HeaderControls";
 import { isMastered } from "../engine/leitner";
 
 export function Home() {
-  const { xp, streak, items, dueItemIds } = useProgress();
+  const { xp, streak, items, dueItemIds, dailyGoal, answeredToday } = useProgress();
   const started = Object.keys(items);
   const dueCount = dueItemIds(started, today()).length;
   return (
@@ -14,9 +16,15 @@ export function Home() {
       <header className="space-y-2">
         <div className="flex justify-between items-center">
           <h1 className="text-xl font-bold">Lern Deutsch 🇩🇪</h1>
-          <span className="text-sm">🔥 {streak.count}</span>
+          <HeaderControls />
         </div>
-        <LevelBar xp={xp} />
+        <div className="flex items-center gap-3">
+          <DailyRing count={answeredToday(today())} goal={dailyGoal} />
+          <div className="flex-1 space-y-1">
+            <div className="text-sm">🔥 {streak.count}</div>
+            <LevelBar xp={xp} />
+          </div>
+        </div>
         {dueCount > 0 && (
           <Link to="/review" className="block text-center py-2 rounded-xl bg-accent/10 text-accent font-semibold">
             {dueCount} mots à réviser aujourd'hui →
