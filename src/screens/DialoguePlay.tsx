@@ -20,7 +20,7 @@ export function DialoguePlay() {
       </div>
     );
   }
-  return <DialoguePlayView dialogue={d} />;
+  return <DialoguePlayView key={d.id} dialogue={d} />;
 }
 
 export function DialoguePlayView({ dialogue }: { dialogue: Dialogue }) {

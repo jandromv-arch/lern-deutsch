@@ -7,14 +7,14 @@ export function ReminderButton() {
   function download() {
     const [h, m] = (reminderTime || "19:00").split(":").map(Number);
     const ics = buildDailyReminderICS(Number.isFinite(h) ? h : 19, Number.isFinite(m) ? m : 0);
-    const url = URL.createObjectURL(new Blob([ics], { type: "text/calendar" }));
+    const url = URL.createObjectURL(new Blob([ics], { type: "text/calendar;charset=utf-8" }));
     const a = document.createElement("a");
     a.href = url;
     a.download = "lern-deutsch-rappel.ics";
     document.body.appendChild(a);
     a.click();
     a.remove();
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
   return (

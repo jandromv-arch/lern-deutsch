@@ -28,7 +28,7 @@ export function TypeInput({ item, onResult }: { item: VocabItem; pool?: VocabIte
           autoFocus
           autoCapitalize="off" autoCorrect="off" spellCheck={false} lang="de"
           readOnly={done !== null}
-          className={`border-b-2 bg-transparent text-xl text-center outline-none px-2 py-1 dark:text-neutral-100 ${done === null ? "border-accent" : done ? "border-good text-good" : "border-bad text-bad"}`}
+          className={`border-b-2 bg-transparent text-xl text-center outline-none px-2 py-1 ${done === null ? "border-accent dark:text-neutral-100" : done ? "border-good text-good" : "border-bad text-bad"}`}
           placeholder="…" aria-label="Réponse en allemand" />
         <AudioButton text={t.answer} />
       </div>
