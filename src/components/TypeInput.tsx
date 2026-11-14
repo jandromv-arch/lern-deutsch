@@ -17,14 +17,15 @@ export function TypeInput({ item, onResult }: { item: VocabItem; pool?: VocabIte
     if (done !== null) return;
     const ok = checkTyped(value, t.answer);
     setDone(ok);
-    timer.current = setTimeout(() => onResult(ok), 600);
+    if (ok) timer.current = setTimeout(() => onResult(true), 600);
   };
   return (
     <div className="p-6 space-y-4 text-center">
       <div className="text-neutral-500 dark:text-neutral-400">{t.promptFr}</div>
       <div className="flex items-center justify-center gap-2">
         <input value={value} onChange={(e) => setValue(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && submit()}
+          onKeyDown={(e) => { if (e.key === "Enter" && !e.nativeEvent.isComposing) submit(); }}
+          autoFocus
           autoCapitalize="off" autoCorrect="off" spellCheck={false} lang="de"
           readOnly={done !== null}
           className={`border-b-2 bg-transparent text-xl text-center outline-none px-2 py-1 dark:text-neutral-100 ${done === null ? "border-accent" : done ? "border-good text-good" : "border-bad text-bad"}`}
@@ -34,8 +35,13 @@ export function TypeInput({ item, onResult }: { item: VocabItem; pool?: VocabIte
       {done === false && (
         <div className="text-sm dark:text-neutral-100">Réponse : <span className="font-semibold">{t.answer}</span></div>
       )}
-      <button onClick={submit} disabled={done !== null}
-        className="w-full py-3 rounded-xl bg-accent text-white disabled:opacity-40">Vérifier</button>
+      {done === false ? (
+        <button onClick={() => onResult(false)}
+          className="w-full py-3 rounded-xl bg-accent text-white">Continuer</button>
+      ) : (
+        <button onClick={submit} disabled={done !== null}
+          className="w-full py-3 rounded-xl bg-accent text-white disabled:opacity-40">Vérifier</button>
+      )}
     </div>
   );
 }

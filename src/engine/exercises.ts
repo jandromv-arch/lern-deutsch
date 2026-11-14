@@ -79,7 +79,7 @@ export function buildOrder(item: VocabItem, rand: () => number = Math.random): O
 }
 
 export function normalizeGerman(s: string): string {
-  return s.toLowerCase().trim().replace(/\s+/g, " ")
+  return s.normalize("NFC").toLowerCase().trim().replace(/\s+/g, " ")
     .replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss")
     .replace(/[.,!?;:]/g, "");
 }

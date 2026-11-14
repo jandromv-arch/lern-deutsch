@@ -25,7 +25,9 @@ describe("TypeInput", () => {
     fireEvent.change(screen.getByRole("textbox"), { target: { value: "xxx" } });
     fireEvent.click(screen.getByText("Vérifier"));
     expect(screen.getByText("Hallo")).toBeTruthy();
-    act(() => { vi.advanceTimersByTime(700); });
+    act(() => { vi.advanceTimersByTime(5000); });
+    expect(onResult).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByText("Continuer"));
     expect(onResult).toHaveBeenCalledWith(false);
   });
 });
