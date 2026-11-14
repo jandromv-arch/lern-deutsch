@@ -34,6 +34,7 @@ export function SessionRunner({ steps, itemsById, pool, onDone }: {
   const Comp = COMP[step.type];
 
   const handle = (correct: boolean) => {
+    if (timer.current) return; // ignore input during the feedback window
     record(step.itemId, correct, today());
     const next = { correct: stats.correct + (correct ? 1 : 0), total: stats.total + 1 };
     setStats(next);
