@@ -25,8 +25,8 @@ describe("Review", () => {
   it("reaches Summary even though answered items leave the due set mid-session", () => {
     const [a, b] = course.lessons[0].items;
     // Seen on an earlier day and answered wrong -> due today.
-    useProgress.getState().recordAnswer(a.id, false, "2000-01-01");
-    useProgress.getState().recordAnswer(b.id, false, "2000-01-01");
+    useProgress.getState().recordItem(a.id, false, "2000-01-01");
+    useProgress.getState().recordItem(b.id, false, "2000-01-01");
     expect(useProgress.getState().dueItemIds([a.id, b.id], "2999-01-01")).toHaveLength(2);
 
     const { getByText, queryByText } = render(<MemoryRouter><Review /></MemoryRouter>);

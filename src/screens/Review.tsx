@@ -24,7 +24,7 @@ export function Review() {
   });
   const [done, setDone] = useState<SessionStats | null>(null);
 
-  if (done) return <Summary stats={done} nextTo="/" />;
+  if (done) return <Summary stats={done} nextTo="/" itemIds={Object.keys(snap.itemsById)} />;
   if (!snap.dueCount)
     return <div className="p-8 text-center text-neutral-500">Rien à réviser aujourd'hui 🎉</div>;
   // Steps come from due items only; distractors are drawn from the full course.

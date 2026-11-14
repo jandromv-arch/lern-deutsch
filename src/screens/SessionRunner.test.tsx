@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, fireEvent, act } from "@testing-library/react";
 import { SessionRunner } from "./SessionRunner";
 import { useProgress } from "../store/useProgress";
+import { buildLessonQueue } from "../engine/session";
 import type { VocabItem } from "../content/types";
 
 const items: Record<string, VocabItem> = { a: { id: "a", de: "Hallo", fr: "Bonjour", gender: null } };
@@ -22,7 +23,7 @@ describe("SessionRunner", () => {
     expect(useProgress.getState().xp).toBe(10);
     expect(onDone).not.toHaveBeenCalled();
     act(() => { vi.advanceTimersByTime(500); });
-    expect(onDone).toHaveBeenCalledWith({ correct: 1, total: 1 });
+    expect(onDone).toHaveBeenCalledWith({ correct: 1, total: 1, xpGained: 10 });
   });
 
   it("does not advance after unmount", () => {
@@ -34,5 +35,36 @@ describe("SessionRunner", () => {
     unmount();
     act(() => { vi.advanceTimersByTime(600); });
     expect(onDone).not.toHaveBeenCalled();
+  });
+
+  it("one full correct lesson pass does not master items (SRS once per item)", () => {
+    const two: VocabItem[] = [
+      { id: "a", de: "Hallo", fr: "Bonjour", gender: null },
+      { id: "b", de: "Danke", fr: "Merci", gender: null },
+    ];
+    const byId = Object.fromEntries(two.map((it) => [it.id, it]));
+    const steps = buildLessonQueue(two);
+    const onDone = vi.fn();
+    const { getByText } = render(
+      <SessionRunner steps={steps} itemsById={byId} pool={two} onDone={onDone} />
+    );
+    for (const step of steps) {
+      const it = byId[step.itemId];
+      if (step.type === "flashcard") fireEvent.click(getByText(/Je savais/));
+      else if (step.type === "order") {
+        fireEvent.click(getByText(it.de));
+        fireEvent.click(getByText("Vérifier"));
+      } else fireEvent.click(getByText(it.fr)); // qcm, and fill (falls back to qcm: no example)
+      act(() => { vi.advanceTimersByTime(500); });
+    }
+    const st = useProgress.getState();
+    expect(st.items["a"].box).toBeLessThanOrEqual(2);
+    expect(st.items["b"].box).toBeLessThanOrEqual(2);
+    expect(st.masteredCount()).toBe(0);
+    expect(onDone).toHaveBeenCalledTimes(1);
+    const stats = onDone.mock.calls[0][0];
+    expect(stats.correct).toBe(stats.total);
+    expect(stats.total).toBe(8);
+    expect(stats.xpGained).toBe(st.xp);
   });
 });

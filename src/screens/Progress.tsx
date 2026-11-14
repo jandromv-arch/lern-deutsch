@@ -5,7 +5,7 @@ import { levelFromXp } from "../engine/xp";
 import { LevelBar } from "../components/LevelBar";
 
 const BADGE_LABELS: Record<string, string> = {
-  "mots-100": "100 mots 📚", "jours-7": "7 jours 🔥", "xp-500": "500 XP ⭐",
+  "mots-100": "100 mots 📚", "jours-7": "7 jours 🔥", "xp-500": "500 XP ⭐", "unite-terminee": "Unité terminée 🏅",
 };
 
 export function Progress() {

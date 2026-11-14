@@ -14,7 +14,10 @@ interface ProgressState {
   streak: Streak;
   badges: string[];
   consecutiveCorrect: number;
-  recordAnswer: (itemId: string, correct: boolean, today: string) => void;
+  startSession: () => void;
+  addAnswer: (correct: boolean, today: string) => void;
+  recordItem: (itemId: string, correct: boolean, today: string) => void;
+  awardBadge: (id: string) => void;
   masteredCount: () => number;
   dueItemIds: (allIds: string[], today: string) => string[];
   reset: () => void;
@@ -45,18 +48,26 @@ export const useProgress = create<ProgressState>()(
   persist(
     (set, get) => ({
       ...initial,
-      recordAnswer: (itemId, correct, today) => {
+      startSession: () => set({ consecutiveCorrect: 0 }),
+      addAnswer: (correct, today) => {
         const s = get();
-        const items = { ...s.items, [itemId]: nextProgress(s.items[itemId], correct, today) };
         const xp = correct ? s.xp + answerXp(s.consecutiveCorrect) : s.xp;
         const streak = correct ? nextStreak(s.streak, today) : s.streak;
         set({
-          items,
           xp,
           streak,
-          badges: earnedBadges(s.badges, items, xp, streak),
+          badges: earnedBadges(s.badges, s.items, xp, streak),
           consecutiveCorrect: correct ? s.consecutiveCorrect + 1 : 0,
         });
+      },
+      recordItem: (itemId, correct, today) => {
+        const s = get();
+        const items = { ...s.items, [itemId]: nextProgress(s.items[itemId], correct, today) };
+        set({ items, badges: earnedBadges(s.badges, items, s.xp, s.streak) });
+      },
+      awardBadge: (id) => {
+        const s = get();
+        if (!s.badges.includes(id)) set({ badges: [...s.badges, id] });
       },
       masteredCount: () => Object.values(get().items).filter(isMastered).length,
       dueItemIds: (allIds, today) => allIds.filter((id) => isDue(get().items[id], today)),

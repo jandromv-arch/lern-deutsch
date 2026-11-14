@@ -25,17 +25,50 @@ export function buildQcm(item: VocabItem, pool: VocabItem[], rand: () => number 
   return { prompt: item.de, answer: item.fr, options };
 }
 
-export interface Fill { sentenceParts: [string, string]; answer: string; options: string[] }
+export interface Fill { sentenceParts: [string, string]; answer: string; options: string[]; ok: boolean }
+
+const stripArticle = (de: string) => de.replace(/^(der|die|das)\s+/i, "");
+const isLetter = (ch: string | undefined) => !!ch && /\p{L}/u.test(ch);
+
+function findSpan(sentence: string, needle: string): number {
+  const hay = sentence.toLowerCase();
+  const n = needle.toLowerCase();
+  let from = 0;
+  for (;;) {
+    const idx = hay.indexOf(n, from);
+    if (idx < 0) return -1;
+    if (!isLetter(sentence[idx - 1]) && !isLetter(sentence[idx + n.length])) return idx;
+    from = idx + 1;
+  }
+}
 
 export function buildFill(item: VocabItem, pool: VocabItem[], rand: () => number = Math.random): Fill {
-  const sentence = item.example?.de ?? item.de;
-  const idx = sentence.indexOf(item.de);
-  const parts: [string, string] = idx >= 0
-    ? [sentence.slice(0, idx), sentence.slice(idx + item.de.length)]
+  const target = stripArticle(item.de);
+  const sentence = item.example?.de;
+  let start = -1;
+  let len = 0;
+  if (sentence) {
+    start = findSpan(sentence, item.de);
+    len = item.de.length;
+    if (start < 0) {
+      start = findSpan(sentence, target);
+      len = target.length;
+    }
+  }
+  const ok = !!sentence && start >= 0;
+  const answer = ok ? sentence!.slice(start, start + len) : target;
+  const parts: [string, string] = ok
+    ? [sentence!.slice(0, start), sentence!.slice(start + len)]
     : ["", ""];
-  const distractors = pickDistractors(pool, (p) => p.de === item.de, 2, rand).map((p) => p.de);
-  const options = shuffle([item.de, ...distractors], rand);
-  return { sentenceParts: parts, answer: item.de, options };
+  const answerLower = answer.toLowerCase();
+  const distractors = pickDistractors(
+    pool.map((p) => stripArticle(p.de)),
+    (d) => d.toLowerCase() === answerLower,
+    2,
+    rand
+  );
+  const options = shuffle([answer, ...distractors], rand);
+  return { sentenceParts: parts, answer, options, ok };
 }
 
 export interface Order { tiles: string[]; solution: string[]; promptFr: string }

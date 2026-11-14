@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import { course } from "../content/course";
 import { buildLessonQueue } from "../engine/session";
 import type { Lesson as Lesson_ } from "../content/types";
+import { useProgress } from "../store/useProgress";
+import { isMastered } from "../engine/leitner";
 import { SessionRunner, type SessionStats } from "./SessionRunner";
 import { Summary } from "./Summary";
 
@@ -21,11 +23,18 @@ function LessonView({ lesson }: { lesson: Lesson_ }) {
     () => Object.fromEntries(lesson.items.map((it) => [it.id, it])),
     [lesson]
   );
-  if (done) return <Summary stats={done} nextTo="/" />;
+  const finish = (stats: SessionStats) => {
+    const st = useProgress.getState();
+    if (lesson.items.every((it) => st.items[it.id] && isMastered(st.items[it.id]))) {
+      st.awardBadge("unite-terminee");
+    }
+    setDone(stats);
+  };
+  if (done) return <Summary stats={done} nextTo="/" itemIds={lesson.items.map((it) => it.id)} />;
   return (
     <div>
       <h1 className="p-4 text-lg font-bold">{lesson.emoji} {lesson.title}</h1>
-      <SessionRunner steps={steps} itemsById={itemsById} pool={lesson.items} onDone={setDone} />
+      <SessionRunner steps={steps} itemsById={itemsById} pool={lesson.items} onDone={finish} />
     </div>
   );
 }

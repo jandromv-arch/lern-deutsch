@@ -32,6 +32,29 @@ describe("buildFill", () => {
     expect(f.answer).toBe("Hallo");
     expect(f.sentenceParts[0] + "___" + f.sentenceParts[1]).toContain("___ Welt");
     expect(f.options).toContain("Hallo");
+    expect(f.ok).toBe(true);
+  });
+  it("blanks the bare noun when the example uses an inflected form", () => {
+    const kaffee: VocabItem = {
+      id: "k", de: "der Kaffee", fr: "le café", gender: "der",
+      example: { de: "Ich trinke einen Kaffee.", fr: "Je bois un café." },
+    };
+    const f = buildFill(kaffee, [kaffee, ...pool], seq([0, 0, 0]));
+    expect(f.ok).toBe(true);
+    expect(f.answer).toBe("Kaffee");
+    expect(f.sentenceParts).toEqual(["Ich trinke einen ", "."]);
+    expect(f.options).toContain("Kaffee");
+    expect(f.options).not.toContain("der Kaffee");
+  });
+  it("preserves original casing of the matched span", () => {
+    const gut: VocabItem = { id: "g", de: "gut", fr: "bien", example: { de: "Gut gemacht", fr: "Bien joué" } };
+    expect(buildFill(gut, pool, seq([0])).answer).toBe("Gut");
+  });
+  it("returns ok:false when there is no example or no match", () => {
+    const noEx: VocabItem = { id: "n", de: "das Brot", fr: "le pain" };
+    expect(buildFill(noEx, pool, seq([0])).ok).toBe(false);
+    const noMatch: VocabItem = { id: "m", de: "das Brot", fr: "le pain", example: { de: "Ich esse Reis.", fr: "" } };
+    expect(buildFill(noMatch, pool, seq([0])).ok).toBe(false);
   });
 });
 
