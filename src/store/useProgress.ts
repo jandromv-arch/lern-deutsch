@@ -20,10 +20,12 @@ interface ProgressState {
   daily: { day: string; count: number };
   soundOn: boolean;
   themePref: ThemePref;
+  reminderTime: string;
   answeredToday: (today: string) => number;
   setSoundOn: (on: boolean) => void;
   setThemePref: (p: ThemePref) => void;
   setDailyGoal: (n: number) => void;
+  setReminderTime: (t: string) => void;
   startSession: () => void;
   addAnswer: (correct: boolean, today: string) => void;
   recordItem: (itemId: string, correct: boolean, today: string) => void;
@@ -38,6 +40,7 @@ const initialSettings = {
   daily: { day: "", count: 0 } as { day: string; count: number },
   soundOn: true,
   themePref: "system" as ThemePref,
+  reminderTime: "19:00",
 };
 
 const initial = {
@@ -89,6 +92,7 @@ export const useProgress = create<ProgressState>()(
       setSoundOn: (soundOn) => set({ soundOn }),
       setThemePref: (themePref) => set({ themePref }),
       setDailyGoal: (dailyGoal) => set({ dailyGoal }),
+      setReminderTime: (reminderTime) => set({ reminderTime }),
       recordItem: (itemId, correct, today) => {
         const s = get();
         const items = { ...s.items, [itemId]: nextProgress(s.items[itemId], correct, today) };

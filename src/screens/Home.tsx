@@ -4,6 +4,7 @@ import { useProgress } from "../store/useProgress";
 import { today } from "../app/today";
 import { LevelBar } from "../components/LevelBar";
 import { DailyRing } from "../components/DailyRing";
+import { ReminderButton } from "../components/ReminderButton";
 import { HeaderControls } from "../components/HeaderControls";
 import { buildDailyPlan } from "../engine/daily";
 import { isMastered } from "../engine/leitner";
@@ -40,6 +41,11 @@ export function Home() {
       <Link to="/dialogues" className="block text-center p-3 rounded-2xl bg-white dark:bg-neutral-800 shadow-sm font-semibold">
         Dialogues 💬
       </Link>
+      {answeredToday(today()) === 0 && (
+        <Link to="/daily" className="block text-center p-3 rounded-2xl bg-amber-100 dark:bg-amber-900/40 text-amber-900 dark:text-amber-100 font-semibold">
+          N'oublie pas ta leçon du jour 🔥 pour garder ta série !
+        </Link>
+      )}
       <div className="grid grid-cols-2 gap-3">
         {course.lessons.map((l) => {
           const mastered = l.items.filter((it) => items[it.id] && isMastered(items[it.id])).length;
@@ -53,6 +59,10 @@ export function Home() {
           );
         })}
       </div>
+      <section className="space-y-2">
+        <h2 className="font-semibold text-sm">Rappel</h2>
+        <ReminderButton />
+      </section>
     </div>
   );
 }
