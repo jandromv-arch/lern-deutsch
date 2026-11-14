@@ -16,6 +16,11 @@ describe("xp", () => {
     expect(l1.index).toBe(1);
     expect(l1.xpInto).toBe(50);
   });
+  it("clamps at max level with a full bar", () => {
+    const l = levelFromXp(2000);
+    expect(l.label).toBe("A2.4");
+    expect(l.xpInto).toBe(l.xpForNext);
+  });
 });
 
 describe("streak", () => {

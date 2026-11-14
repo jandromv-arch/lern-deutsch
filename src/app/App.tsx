@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "./Layout";
 import { Home } from "../screens/Home";
 import { Lesson } from "../screens/Lesson";
@@ -7,7 +7,7 @@ import { Progress } from "../screens/Progress";
 
 export function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
@@ -16,6 +16,6 @@ export function App() {
           <Route path="/progress" element={<Progress />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }

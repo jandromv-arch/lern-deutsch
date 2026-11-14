@@ -19,4 +19,4 @@ Las lecciones viven en `src/content/lessons/*.ts`, se ensamblan en `src/content/
 
 El workflow `.github/workflows/deploy.yml` ejecuta tests, build y publica `dist/` en GitHub Pages.
 
-Con `base: "./"` (en `vite.config.ts`) la app funciona en local y en sitios raíz (user/org pages). Para un **project page** (servido bajo `/<repo>/`) habría que poner `base: "/<repo>/"` y cambiar `BrowserRouter` por `HashRouter`. Ese cambio no está aplicado todavía; el código se deja como está.
+La app usa `HashRouter` (rutas tipo `#/lesson/x`) y `base: "./"` en `vite.config.ts`, así que funciona en local, en sitios raíz y también en project pages (`/<repo>/`) sin configuración extra.

@@ -16,9 +16,13 @@ export interface Level {
 }
 
 export function levelFromXp(totalXp: number): Level {
+  const maxIndex = LEVEL_LABELS.length - 1;
   const index = Math.floor(totalXp / XP_PER_LEVEL);
-  const label = LEVEL_LABELS[Math.min(index, LEVEL_LABELS.length - 1)];
-  return { label, index, xpInto: totalXp % XP_PER_LEVEL, xpForNext: XP_PER_LEVEL };
+  if (index >= maxIndex) {
+    // Past the top level: keep the last label and show a full bar.
+    return { label: LEVEL_LABELS[maxIndex], index: maxIndex, xpInto: XP_PER_LEVEL, xpForNext: XP_PER_LEVEL };
+  }
+  return { label: LEVEL_LABELS[index], index, xpInto: totalXp % XP_PER_LEVEL, xpForNext: XP_PER_LEVEL };
 }
 
 export function nextStreak(
