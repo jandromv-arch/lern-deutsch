@@ -3,6 +3,8 @@ import { persist } from "zustand/middleware";
 import { nextProgress, isMastered, isDue, type ItemProgress } from "../engine/leitner";
 import { answerXp, nextStreak } from "../engine/xp";
 
+export type ThemePref = "system" | "light" | "dark";
+
 interface Streak {
   count: number;
   lastDay: string | null;
@@ -14,6 +16,14 @@ interface ProgressState {
   streak: Streak;
   badges: string[];
   consecutiveCorrect: number;
+  dailyGoal: number;
+  daily: { day: string; count: number };
+  soundOn: boolean;
+  themePref: ThemePref;
+  answeredToday: (today: string) => number;
+  setSoundOn: (on: boolean) => void;
+  setThemePref: (p: ThemePref) => void;
+  setDailyGoal: (n: number) => void;
   startSession: () => void;
   addAnswer: (correct: boolean, today: string) => void;
   recordItem: (itemId: string, correct: boolean, today: string) => void;
@@ -23,7 +33,15 @@ interface ProgressState {
   reset: () => void;
 }
 
+const initialSettings = {
+  dailyGoal: 15,
+  daily: { day: "", count: 0 } as { day: string; count: number },
+  soundOn: true,
+  themePref: "system" as ThemePref,
+};
+
 const initial = {
+  ...initialSettings,
   items: {} as Record<string, ItemProgress>,
   xp: 0,
   streak: { count: 0, lastDay: null } as Streak,
@@ -58,8 +76,19 @@ export const useProgress = create<ProgressState>()(
           streak,
           badges: earnedBadges(s.badges, s.items, xp, streak),
           consecutiveCorrect: correct ? s.consecutiveCorrect + 1 : 0,
+          daily:
+            s.daily.day !== today
+              ? { day: today, count: 1 }
+              : { ...s.daily, count: s.daily.count + 1 },
         });
       },
+      answeredToday: (today) => {
+        const d = get().daily;
+        return d.day === today ? d.count : 0;
+      },
+      setSoundOn: (soundOn) => set({ soundOn }),
+      setThemePref: (themePref) => set({ themePref }),
+      setDailyGoal: (dailyGoal) => set({ dailyGoal }),
       recordItem: (itemId, correct, today) => {
         const s = get();
         const items = { ...s.items, [itemId]: nextProgress(s.items[itemId], correct, today) };
@@ -73,6 +102,14 @@ export const useProgress = create<ProgressState>()(
       dueItemIds: (allIds, today) => allIds.filter((id) => isDue(get().items[id], today)),
       reset: () => set({ ...initial }),
     }),
-    { name: "lern-deutsch-v1", version: 1 }
+    {
+      name: "lern-deutsch-v1",
+      version: 2,
+      // Additive: keep persisted data, fill any missing new fields with defaults.
+      migrate: (persisted: unknown) => ({
+        ...initialSettings,
+        ...((persisted && typeof persisted === "object" ? persisted : {}) as object),
+      }) as ProgressState,
+    }
   )
 );
