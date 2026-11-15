@@ -6,8 +6,8 @@ const mk = (id: string) => ({ id, de: id, fr: id });
 const course: Course = {
   id: "c", from: "fr", to: "de",
   lessons: [
-    { id: "l1", title: "L1", emoji: "1", items: ["a", "b", "c"].map(mk) },
-    { id: "l2", title: "L2", emoji: "2", items: ["d", "e", "f"].map(mk) },
+    { id: "l1", title: "L1", emoji: "1", level: "A1", items: ["a", "b", "c"].map(mk) },
+    { id: "l2", title: "L2", emoji: "2", level: "A1", items: ["d", "e", "f"].map(mk) },
   ],
 };
 const T = "2026-01-10";
