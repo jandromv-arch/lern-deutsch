@@ -120,8 +120,7 @@ export const dialogues: Dialogue[] = [
     lines: [
       { speaker: "Empfang", de: "Firma Weber, guten Tag. Was kann ich für Sie tun?", fr: "Entreprise Weber, bonjour. Que puis-je faire pour vous ?" },
       { speaker: "Anrufer", de: "Guten Tag, hier spricht Paul Martin. Ich möchte bitte mit Frau Schmidt sprechen.", fr: "Bonjour, ici Paul Martin. Je voudrais parler à Madame Schmidt, s'il vous plaît." },
-      { speaker: "Empfang", de: "Einen Moment, bitte. Ich verbinde Sie.", fr: "Un instant, s'il vous plaît. Je vous mets en relation." },
-      { speaker: "Empfang", de: "Es tut mir leid, die Leitung ist besetzt.", fr: "Je suis désolé, la ligne est occupée." },
+      { speaker: "Empfang", de: "Einen Moment, bitte … Es tut mir leid, die Leitung ist besetzt.", fr: "Un instant, s'il vous plaît… Je suis désolé, la ligne est occupée." },
       { speaker: "Anrufer", de: "Können Sie ihr etwas ausrichten?", fr: "Pouvez-vous lui transmettre un message ?" },
       { speaker: "Empfang", de: "Natürlich. Was soll ich ihr sagen?", fr: "Bien sûr. Que dois-je lui dire ?" },
       { speaker: "Anrufer", de: "Bitte sagen Sie ihr, dass ich morgen noch einmal anrufe.", fr: "Dites-lui s'il vous plaît que je rappellerai demain." },
