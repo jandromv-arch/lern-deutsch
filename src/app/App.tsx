@@ -7,6 +7,7 @@ import { Daily } from "../screens/Daily";
 import { Progress } from "../screens/Progress";
 import { Dialogue } from "../screens/Dialogue";
 import { DialoguePlay } from "../screens/DialoguePlay";
+import { Grammar } from "../screens/Grammar";
 
 export function App() {
   return (
@@ -19,6 +20,7 @@ export function App() {
           <Route path="/review" element={<Review />} />
           <Route path="/dialogues" element={<Dialogue />} />
           <Route path="/dialogues/:id" element={<DialoguePlay />} />
+          <Route path="/grammar" element={<Grammar />} />
           <Route path="/progress" element={<Progress />} />
         </Route>
       </Routes>

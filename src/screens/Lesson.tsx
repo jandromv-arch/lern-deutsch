@@ -7,6 +7,7 @@ import { useProgress } from "../store/useProgress";
 import { isMastered } from "../engine/leitner";
 import { SessionRunner, type SessionStats } from "./SessionRunner";
 import { Summary } from "./Summary";
+import { GrammarTip } from "../components/GrammarTip";
 
 export function Lesson() {
   const { id } = useParams();
@@ -18,6 +19,7 @@ export function Lesson() {
 
 function LessonView({ lesson }: { lesson: Lesson_ }) {
   const [done, setDone] = useState<SessionStats | null>(null);
+  const [started, setStarted] = useState(!lesson.grammarTip);
   const steps = useMemo(() => buildLessonQueue(lesson.items), [lesson]);
   const itemsById = useMemo(
     () => Object.fromEntries(lesson.items.map((it) => [it.id, it])),
@@ -31,6 +33,16 @@ function LessonView({ lesson }: { lesson: Lesson_ }) {
     setDone(stats);
   };
   if (done) return <Summary stats={done} nextTo="/" itemIds={lesson.items.map((it) => it.id)} />;
+  if (!started && lesson.grammarTip) {
+    return (
+      <div>
+        <h1 className="p-4 text-lg font-bold">{lesson.emoji} {lesson.title}</h1>
+        <div className="px-4">
+          <GrammarTip tip={lesson.grammarTip} onContinue={() => setStarted(true)} />
+        </div>
+      </div>
+    );
+  }
   return (
     <div>
       <h1 className="p-4 text-lg font-bold">{lesson.emoji} {lesson.title}</h1>

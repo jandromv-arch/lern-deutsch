@@ -41,6 +41,9 @@ export function Home() {
       <Link to="/dialogues" className="block text-center p-3 rounded-2xl bg-white dark:bg-neutral-800 shadow-sm font-semibold">
         Dialogues 💬
       </Link>
+      <Link to="/grammar" className="block text-center p-3 rounded-2xl bg-white dark:bg-neutral-800 shadow-sm font-semibold">
+        Grammaire 📚
+      </Link>
       {answeredToday(today()) === 0 && (
         <Link to="/daily" className="block text-center p-3 rounded-2xl bg-amber-100 dark:bg-amber-900/40 text-amber-900 dark:text-amber-100 font-semibold">
           N'oublie pas ta leçon du jour 🔥 pour garder ta série !
