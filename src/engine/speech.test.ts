@@ -36,6 +36,16 @@ describe("speech", () => {
     expect(utt.lang).toBe("de-DE");
   });
 
+  it("sets the utterance rate from the argument (default 1)", () => {
+    const speakFn = vi.fn();
+    g.speechSynthesis = { speak: speakFn, cancel: vi.fn(), getVoices: () => [] };
+    g.SpeechSynthesisUtterance = class { lang = ""; text = ""; rate = 0; constructor(t: string){ this.text = t; } };
+    speak("Hallo");
+    speak("Hallo", "de-DE", 0.7);
+    expect(speakFn.mock.calls[0][0].rate).toBe(1);
+    expect(speakFn.mock.calls[1][0].rate).toBe(0.7);
+  });
+
   it("cancels in-flight speech before speaking the new utterance", () => {
     const speakFn = vi.fn();
     const cancelFn = vi.fn();

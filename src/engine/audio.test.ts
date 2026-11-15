@@ -10,15 +10,18 @@ const created: string[] = [];
 const play = vi.fn(() => Promise.resolve());
 const pause = vi.fn();
 
+const instances: FakeAudio[] = [];
+
 class FakeAudio {
   onerror: (() => void) | null = null;
   play = play;
   pause = pause;
-  constructor(url: string) { created.push(url); }
+  constructor(url: string) { created.push(url); instances.push(this); }
 }
 
 beforeEach(() => {
   created.length = 0;
+  instances.length = 0;
   play.mockClear();
   pause.mockClear();
   vi.mocked(speak).mockClear();
@@ -44,9 +47,21 @@ describe("audio engine", () => {
   });
   it("plays the slow clip and pauses the previous one", () => {
     playAudio("Hallo");
+    pause.mockClear();
     playAudio("Hallo", { slow: true });
     expect(created[1]).toMatch(/\.slow\.mp3$/);
     expect(pause).toHaveBeenCalled();
+  });
+  it("speaks once when onerror and play rejection both fire", async () => {
+    play.mockImplementationOnce(() => Promise.reject(new Error("x")));
+    playAudio("Hallo");
+    instances[0].onerror?.();
+    await Promise.resolve(); await Promise.resolve();
+    expect(speak).toHaveBeenCalledTimes(1);
+  });
+  it("slow fallback to speech uses the slow rate", () => {
+    playAudio("Nope", { slow: true });
+    expect(speak).toHaveBeenCalledWith("Nope", "de-DE", 0.7);
   });
   it("falls back to speech when no clip", () => {
     playAudio("Nope");
