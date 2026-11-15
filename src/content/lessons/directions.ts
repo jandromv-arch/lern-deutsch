@@ -4,6 +4,7 @@ export const directions: Lesson = {
   id: "directions",
   title: "Les directions",
   emoji: "🧭",
+  level: "A1",
   items: [
     { id: "directions-01", de: "links", fr: "à gauche", gender: null,
       example: { de: "Gehen Sie links.", fr: "Allez à gauche." } },

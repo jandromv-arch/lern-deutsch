@@ -4,6 +4,7 @@ export const vetements: Lesson = {
   id: "vetements",
   title: "Les vêtements",
   emoji: "👕",
+  level: "A1",
   items: [
     { id: "vetements-01", de: "die Kleidung", fr: "les vêtements", gender: "die",
       example: { de: "Die Kleidung ist neu.", fr: "Les vêtements sont neufs." } },

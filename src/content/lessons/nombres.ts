@@ -4,6 +4,7 @@ export const nombres: Lesson = {
   id: "nombres",
   title: "Les nombres",
   emoji: "🔢",
+  level: "A1",
   items: [
     { id: "nombres-01", de: "eins", fr: "un", gender: null },
     { id: "nombres-02", de: "zwei", fr: "deux", gender: null },

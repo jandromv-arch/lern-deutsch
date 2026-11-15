@@ -4,6 +4,7 @@ export const corps: Lesson = {
   id: "corps",
   title: "Le corps / la santé",
   emoji: "🩺",
+  level: "A1",
   items: [
     { id: "corps-01", de: "der Körper", fr: "le corps", gender: "der",
       example: { de: "Der Körper braucht Ruhe.", fr: "Le corps a besoin de repos." } },

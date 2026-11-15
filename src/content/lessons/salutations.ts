@@ -4,6 +4,7 @@ export const salutations: Lesson = {
   id: "salutations",
   title: "Salutations",
   emoji: "👋",
+  level: "A1",
   items: [
     { id: "salutations-01", de: "Hallo", fr: "Bonjour / Salut", gender: null,
       example: { de: "Hallo, wie geht's?", fr: "Salut, comment ça va ?" } },

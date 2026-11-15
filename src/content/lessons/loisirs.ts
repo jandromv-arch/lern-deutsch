@@ -4,6 +4,7 @@ export const loisirs: Lesson = {
   id: "loisirs",
   title: "Les loisirs",
   emoji: "🎨",
+  level: "A1",
   items: [
     { id: "loisirs-01", de: "die Freizeit", fr: "le temps libre", gender: "die",
       example: { de: "In der Freizeit lese ich.", fr: "Pendant mon temps libre, je lis." } },

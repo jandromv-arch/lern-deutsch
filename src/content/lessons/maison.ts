@@ -4,6 +4,7 @@ export const maison: Lesson = {
   id: "maison",
   title: "La maison",
   emoji: "🏠",
+  level: "A1",
   items: [
     { id: "maison-01", de: "das Haus", fr: "la maison", gender: "das",
       example: { de: "Das Haus ist groß.", fr: "La maison est grande." } },

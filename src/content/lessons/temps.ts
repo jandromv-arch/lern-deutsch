@@ -4,6 +4,7 @@ export const temps: Lesson = {
   id: "temps",
   title: "Le temps / la météo",
   emoji: "🌦️",
+  level: "A1",
   items: [
     { id: "temps-01", de: "das Wetter", fr: "le temps (météo)", gender: "das",
       example: { de: "Das Wetter ist schön.", fr: "Il fait beau." } },

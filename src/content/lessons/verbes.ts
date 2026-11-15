@@ -4,6 +4,7 @@ export const verbes: Lesson = {
   id: "verbes",
   title: "Les verbes courants",
   emoji: "🏃",
+  level: "A1",
   items: [
     { id: "verbes-01", de: "sein", fr: "être", gender: null,
       example: { de: "Ich bin müde.", fr: "Je suis fatigué." } },

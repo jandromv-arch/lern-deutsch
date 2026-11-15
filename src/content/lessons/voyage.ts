@@ -4,6 +4,7 @@ export const voyage: Lesson = {
   id: "voyage",
   title: "Le voyage",
   emoji: "✈️",
+  level: "A1",
   items: [
     { id: "voyage-01", de: "die Reise", fr: "le voyage", gender: "die",
       example: { de: "Die Reise war lang.", fr: "Le voyage était long." } },
