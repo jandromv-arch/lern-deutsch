@@ -9,13 +9,14 @@ export function hasClip(text: string): boolean {
   return Object.hasOwn(map, text?.trim());
 }
 
-// Bump when the audio files change but keep the same name (cache-bust).
-const AUDIO_VERSION = "2";
+// AAC/.m4a is iOS Safari's native codec (MP3 at 22050 Hz / MPEG-2 was refused).
+// Bump when the files change but keep the same name (cache-bust).
+const AUDIO_VERSION = "3";
 
 export function clipUrl(text: string, slow = false): string | null {
   const key = text?.trim();
   if (!key || !Object.hasOwn(map, key)) return null;
-  return `${BASE}audio/${map[key]}${slow ? ".slow" : ""}.mp3?v=${AUDIO_VERSION}`;
+  return `${BASE}audio/${map[key]}${slow ? ".slow" : ""}.m4a?v=${AUDIO_VERSION}`;
 }
 
 // Why Web Audio instead of an <audio> element:

@@ -42,11 +42,11 @@ def synth(voice, text: str, wav_path: str, scale: float):
             voice.synthesize_wav(text, wf)
 
 
-def to_mp3(wav_path: str, mp3_path: str):
-    # 44100 Hz MPEG-1 Layer III. Piper outputs 22050 Hz (MPEG-2), which iOS
-    # Safari refuses to decode ("no supported source"); resample to 44.1 kHz.
+def to_mp3(wav_path: str, out_path: str):
+    # AAC/.m4a at 44100 Hz — iOS Safari's native codec. MP3 at 22050 Hz (MPEG-2,
+    # what Piper outputs) was refused by iOS ("no supported source").
     subprocess.run(
-        ["ffmpeg", "-y", "-i", wav_path, "-ar", "44100", "-ac", "1", "-b:a", "96k", mp3_path],
+        ["ffmpeg", "-y", "-i", wav_path, "-c:a", "aac", "-b:a", "96k", "-ar", "44100", out_path],
         check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
     )
 
@@ -70,8 +70,8 @@ def main():
     for i, text in enumerate(strings, 1):
         key = h(text)
         manifest[text] = key
-        normal_mp3 = os.path.join(OUT_DIR, f"{key}.mp3")
-        slow_mp3 = os.path.join(OUT_DIR, f"{key}.slow.mp3")
+        normal_mp3 = os.path.join(OUT_DIR, f"{key}.m4a")
+        slow_mp3 = os.path.join(OUT_DIR, f"{key}.slow.m4a")
         for mp3_path, scale in ((normal_mp3, NORMAL_SCALE), (slow_mp3, SLOW_SCALE)):
             if os.path.exists(mp3_path):
                 continue
