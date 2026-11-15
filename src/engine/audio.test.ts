@@ -6,22 +6,28 @@ vi.mock("./speech", () => ({ speak: vi.fn(), isSpeechSupported: () => true }));
 import { speak } from "./speech";
 import { hasClip, clipUrl, playAudio } from "./audio";
 
-const created: string[] = [];
+const playedSrcs: string[] = [];
 const play = vi.fn(() => Promise.resolve());
 const pause = vi.fn();
+let lastInstance: FakeAudio | null = null;
 
-const instances: FakeAudio[] = [];
-
+// The engine reuses ONE Audio element (iOS requirement). The fake tracks every
+// src assigned to it, so tests assert on what was played rather than on how many
+// elements were constructed.
 class FakeAudio {
+  preload = "";
+  currentTime = 0;
   onerror: (() => void) | null = null;
   play = play;
   pause = pause;
-  constructor(url: string) { created.push(url); instances.push(this); }
+  private _src = "";
+  get src() { return this._src; }
+  set src(v: string) { this._src = v; playedSrcs.push(v); }
+  constructor() { lastInstance = this; }
 }
 
 beforeEach(() => {
-  created.length = 0;
-  instances.length = 0;
+  playedSrcs.length = 0;
   play.mockClear();
   pause.mockClear();
   vi.mocked(speak).mockClear();
@@ -40,23 +46,23 @@ describe("audio engine", () => {
   });
   it("plays the clip when present", () => {
     playAudio("Hallo");
-    expect(created).toHaveLength(1);
-    expect(created[0]).toMatch(/abcd1234abcd1234\.mp3$/);
+    expect(playedSrcs.at(-1)).toMatch(/abcd1234abcd1234\.mp3$/);
     expect(play).toHaveBeenCalled();
     expect(speak).not.toHaveBeenCalled();
   });
-  it("plays the slow clip and pauses the previous one", () => {
+  it("plays the slow clip and pauses before replaying", () => {
     playAudio("Hallo");
     pause.mockClear();
     playAudio("Hallo", { slow: true });
-    expect(created[1]).toMatch(/\.slow\.mp3$/);
+    expect(playedSrcs.at(-1)).toMatch(/\.slow\.mp3$/);
     expect(pause).toHaveBeenCalled();
   });
   it("speaks once when onerror and play rejection both fire", async () => {
     play.mockImplementationOnce(() => Promise.reject(new Error("x")));
     playAudio("Hallo");
-    instances[0].onerror?.();
-    await Promise.resolve(); await Promise.resolve();
+    lastInstance?.onerror?.();
+    await Promise.resolve();
+    await Promise.resolve();
     expect(speak).toHaveBeenCalledTimes(1);
   });
   it("slow fallback to speech uses the slow rate", () => {
@@ -66,12 +72,13 @@ describe("audio engine", () => {
   it("falls back to speech when no clip", () => {
     playAudio("Nope");
     expect(speak).toHaveBeenCalledWith("Nope");
-    expect(created).toHaveLength(0);
+    expect(playedSrcs).toHaveLength(0);
   });
   it("falls back to speech when play rejects", async () => {
     play.mockImplementationOnce(() => Promise.reject(new Error("x")));
     playAudio("Hallo");
-    await Promise.resolve(); await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
     expect(speak).toHaveBeenCalledWith("Hallo");
   });
 });
