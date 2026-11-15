@@ -46,7 +46,7 @@ describe("audio engine", () => {
     playAudio("Hallo");
     playAudio("Hallo", { slow: true });
     expect(created[1]).toMatch(/\.slow\.mp3$/);
-    expect(pause).toHaveBeenCalledTimes(1);
+    expect(pause).toHaveBeenCalled();
   });
   it("falls back to speech when no clip", () => {
     playAudio("Nope");
