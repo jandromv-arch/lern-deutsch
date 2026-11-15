@@ -9,10 +9,13 @@ export function hasClip(text: string): boolean {
   return Object.hasOwn(map, text?.trim());
 }
 
+// Bump when the audio files change but keep the same name (cache-bust).
+const AUDIO_VERSION = "2";
+
 export function clipUrl(text: string, slow = false): string | null {
   const key = text?.trim();
   if (!key || !Object.hasOwn(map, key)) return null;
-  return `${BASE}audio/${map[key]}${slow ? ".slow" : ""}.mp3`;
+  return `${BASE}audio/${map[key]}${slow ? ".slow" : ""}.mp3?v=${AUDIO_VERSION}`;
 }
 
 // Why Web Audio instead of an <audio> element:

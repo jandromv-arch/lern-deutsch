@@ -55,21 +55,21 @@ describe("audio engine (Web Audio)", () => {
     expect(hasClip("Nope")).toBe(false);
   });
   it("clipUrl normal + slow", () => {
-    expect(clipUrl("Hallo")).toMatch(/audio\/abcd1234abcd1234\.mp3$/);
-    expect(clipUrl("Hallo", true)).toMatch(/audio\/abcd1234abcd1234\.slow\.mp3$/);
+    expect(clipUrl("Hallo")).toMatch(/audio\/abcd1234abcd1234\.mp3\?v=/);
+    expect(clipUrl("Hallo", true)).toMatch(/audio\/abcd1234abcd1234\.slow\.mp3\?v=/);
     expect(clipUrl("Nope")).toBeNull();
   });
   it("decodes and plays the clip (no speech)", async () => {
     playAudio("Hallo");
     await flush();
-    expect(fetchedUrls[0]).toMatch(/abcd1234abcd1234\.mp3$/);
+    expect(fetchedUrls[0]).toMatch(/abcd1234abcd1234\.mp3\?v=/);
     expect(start).toHaveBeenCalled();
     expect(speak).not.toHaveBeenCalled();
   });
   it("fetches the slow clip for slow", async () => {
     playAudio("Hallo", { slow: true });
     await flush();
-    expect(fetchedUrls[0]).toMatch(/\.slow\.mp3$/);
+    expect(fetchedUrls[0]).toMatch(/\.slow\.mp3\?v=/);
     expect(start).toHaveBeenCalled();
   });
   it("falls back to speech when there is no clip", () => {
