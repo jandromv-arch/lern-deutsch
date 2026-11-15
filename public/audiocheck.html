@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Audio check</title>
+<style>
+  body{font-family:-apple-system,system-ui,sans-serif;padding:16px;font-size:18px}
+  button{font-size:20px;padding:14px 18px;margin:8px 0;width:100%;border-radius:12px;border:1px solid #ccc;background:#f97316;color:#fff}
+  pre{background:#111;color:#0f0;padding:10px;border-radius:8px;white-space:pre-wrap;font-size:14px;min-height:140px}
+  h1{font-size:20px}
+</style>
+</head>
+<body>
+<h1>iOS audio diagnostic</h1>
+<div id="url"></div>
+<button id="b1">1) Test &lt;audio&gt; element</button>
+<button id="b2">2) Test Web Audio (decode bytes)</button>
+<button id="b3">0) Fetch + headers</button>
+<pre id="log">tap a button…</pre>
+<script>
+const MP3 = location.pathname.replace(/audiocheck\.html$/, "") + "audio/59d9a6df06b9f610.mp3";
+document.getElementById("url").textContent = MP3;
+const log = (m)=>{ document.getElementById("log").textContent = m + "\n" + document.getElementById("log").textContent; };
+let ctx = null;
+
+document.getElementById("b3").onclick = async () => {
+  try {
+    const r = await fetch(MP3);
+    log("FETCH ok: status="+r.status+" type="+r.headers.get("content-type")+" len="+r.headers.get("content-length"));
+  } catch(e){ log("FETCH FAIL: "+e.name+" "+e.message); }
+};
+
+document.getElementById("b1").onclick = () => {
+  try {
+    const a = new Audio(MP3);
+    a.onplaying = ()=>log("AUDIO element: PLAYING ✅");
+    a.onerror = ()=>log("AUDIO element: ERROR ❌ code="+(a.error&&a.error.code));
+    const p = a.play();
+    if (p && p.then) p.then(()=>log("AUDIO play() resolved")).catch(e=>log("AUDIO play() REJECT ❌ "+e.name+": "+e.message));
+  } catch(e){ log("AUDIO threw: "+e.name+" "+e.message); }
+};
+
+document.getElementById("b2").onclick = async () => {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC){ log("No AudioContext ❌"); return; }
+    if (!ctx) ctx = new AC();
+    await ctx.resume();
+    log("WebAudio ctx state="+ctx.state);
+    const buf = await fetch(MP3).then(r=>r.arrayBuffer());
+    log("WebAudio fetched bytes="+buf.byteLength);
+    ctx.decodeAudioData(buf.slice(0), (decoded)=>{
+      const src = ctx.createBufferSource();
+      src.buffer = decoded; src.connect(ctx.destination); src.start();
+      log("WebAudio: DECODED + PLAYING ✅ dur="+decoded.duration.toFixed(2)+"s");
+    }, (err)=>log("WebAudio decode ERROR ❌ "+(err&&err.message||err)));
+  } catch(e){ log("WebAudio threw: "+e.name+" "+e.message); }
+};
+</script>
+</body>
+</html>
