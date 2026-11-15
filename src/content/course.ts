@@ -22,6 +22,12 @@ import { a2Maison2 } from "./lessons/a2-maison2";
 import { a2Loisirs2 } from "./lessons/a2-loisirs2";
 import { a2Emotions } from "./lessons/a2-emotions";
 import { a2Ville } from "./lessons/a2-ville";
+import { b1Travail3 } from "./lessons/b1-travail3";
+import { b1Actualite } from "./lessons/b1-actualite";
+import { b1Environnement } from "./lessons/b1-environnement";
+import { b1Opinions } from "./lessons/b1-opinions";
+import { b1Culture } from "./lessons/b1-culture";
+import { b1Abstrait } from "./lessons/b1-abstrait";
 
 export const course: Course = {
   id: "de-fr-a1",
@@ -31,5 +37,6 @@ export const course: Course = {
     salutations, cafe, nombres, famille, maison, nourriture, vetements,
     temps, directions, travail, voyage, corps, loisirs, verbes, phrases,
     a2Restaurant, a2Sante, a2Travail2, a2Voyage2, a2Maison2, a2Loisirs2, a2Emotions, a2Ville,
+    b1Travail3, b1Actualite, b1Environnement, b1Opinions, b1Culture, b1Abstrait,
   ],
 };
