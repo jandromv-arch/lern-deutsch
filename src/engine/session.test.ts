@@ -8,11 +8,24 @@ const items: VocabItem[] = [
 ];
 
 describe("buildLessonQueue", () => {
-  it("produces 4 steps per item in fixed order", () => {
+  it("gives each item a flashcard + two practice exercises", () => {
     const q = buildLessonQueue(items);
-    expect(q.length).toBe(8);
-    expect(q.slice(0, 4).map((s) => s.type)).toEqual(["flashcard", "qcm", "fill", "order"]);
-    expect(q[0].itemId).toBe("a");
+    expect(q.length).toBe(6); // 2 items × 3 steps
+    // item "a" (i=0): flashcard, qcm, order
+    expect(q.slice(0, 3)).toEqual([
+      { itemId: "a", type: "flashcard" },
+      { itemId: "a", type: "qcm" },
+      { itemId: "a", type: "order" },
+    ]);
+    // item "b" (i=1): flashcard, fill, type
+    expect(q.slice(3, 6).map((s) => s.type)).toEqual(["flashcard", "fill", "type"]);
+  });
+  it("across a lesson all five practice types appear and the first step is a flashcard", () => {
+    const many: VocabItem[] = Array.from({ length: 10 }, (_, i) => ({ id: `i${i}`, de: `D${i}`, fr: `f${i}` }));
+    const q = buildLessonQueue(many);
+    expect(q[0].type).toBe("flashcard");
+    const practice = new Set(q.filter((s) => s.type !== "flashcard").map((s) => s.type));
+    for (const t of ["qcm", "fill", "order", "type", "listen"]) expect(practice.has(t as never)).toBe(true);
   });
 });
 

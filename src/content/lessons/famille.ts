@@ -4,6 +4,7 @@ export const famille: Lesson = {
   id: "famille",
   title: "La famille",
   emoji: "👨‍👩‍👧",
+  level: "A1",
   items: [
     { id: "famille-01", de: "die Familie", fr: "la famille", gender: "die",
       example: { de: "Meine Familie ist groß.", fr: "Ma famille est grande." } },

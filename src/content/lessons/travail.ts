@@ -4,6 +4,7 @@ export const travail: Lesson = {
   id: "travail",
   title: "Le travail",
   emoji: "💼",
+  level: "A1",
   items: [
     { id: "travail-01", de: "die Arbeit", fr: "le travail", gender: "die",
       example: { de: "Die Arbeit beginnt um acht.", fr: "Le travail commence à huit heures." } },

@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, fireEvent, act } from "@testing-library/react";
 import { SessionRunner } from "./SessionRunner";
 import { useProgress } from "../store/useProgress";
-import { buildLessonQueue } from "../engine/session";
 import type { VocabItem } from "../content/types";
 
 const items: Record<string, VocabItem> = { a: { id: "a", de: "Hallo", fr: "Bonjour", gender: null } };
@@ -43,7 +42,12 @@ describe("SessionRunner", () => {
       { id: "b", de: "Danke", fr: "Merci", gender: null },
     ];
     const byId = Object.fromEntries(two.map((it) => [it.id, it]));
-    const steps = buildLessonQueue(two);
+    // Controlled queue (flashcard + qcm per item) so the test drives the UI;
+    // SRS must record each item ONCE regardless of how many practice steps it has.
+    const steps = [
+      { itemId: "a", type: "flashcard" as const }, { itemId: "a", type: "qcm" as const },
+      { itemId: "b", type: "flashcard" as const }, { itemId: "b", type: "qcm" as const },
+    ];
     const onDone = vi.fn();
     const { getByText } = render(
       <SessionRunner steps={steps} itemsById={byId} pool={two} onDone={onDone} />
@@ -51,10 +55,7 @@ describe("SessionRunner", () => {
     for (const step of steps) {
       const it = byId[step.itemId];
       if (step.type === "flashcard") fireEvent.click(getByText(/Je savais/));
-      else if (step.type === "order") {
-        fireEvent.click(getByText(it.de));
-        fireEvent.click(getByText("Vérifier"));
-      } else fireEvent.click(getByText(it.fr)); // qcm, and fill (falls back to qcm: no example)
+      else fireEvent.click(getByText(it.fr)); // qcm: click the correct French option
       act(() => { vi.advanceTimersByTime(500); });
     }
     const st = useProgress.getState();
@@ -64,7 +65,7 @@ describe("SessionRunner", () => {
     expect(onDone).toHaveBeenCalledTimes(1);
     const stats = onDone.mock.calls[0][0];
     expect(stats.correct).toBe(stats.total);
-    expect(stats.total).toBe(8);
+    expect(stats.total).toBe(4);
     expect(stats.xpGained).toBe(st.xp);
   });
 });

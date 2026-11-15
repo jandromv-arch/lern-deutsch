@@ -6,8 +6,8 @@ describe("dialogues", () => {
   it("are valid", () => {
     expect(validateDialogues(dialogues)).toEqual([]);
   });
-  it("has ~5 dialogues with >=2 lines each", () => {
-    expect(dialogues.length).toBeGreaterThanOrEqual(5);
+  it("has >=10 dialogues with >=2 lines each", () => {
+    expect(dialogues.length).toBeGreaterThanOrEqual(10);
     for (const d of dialogues) expect(d.lines.length).toBeGreaterThanOrEqual(2);
   });
 });

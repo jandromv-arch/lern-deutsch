@@ -4,6 +4,7 @@ export const nourriture: Lesson = {
   id: "nourriture",
   title: "La nourriture",
   emoji: "🍎",
+  level: "A1",
   items: [
     { id: "nourriture-01", de: "das Brot", fr: "le pain", gender: "das",
       example: { de: "Ich esse Brot mit Butter.", fr: "Je mange du pain avec du beurre." } },

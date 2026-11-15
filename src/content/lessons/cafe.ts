@@ -4,6 +4,7 @@ export const cafe: Lesson = {
   id: "cafe",
   title: "Au café",
   emoji: "☕",
+  level: "A1",
   items: [
     { id: "cafe-01", de: "der Kaffee", fr: "le café", gender: "der",
       example: { de: "Ich trinke einen Kaffee.", fr: "Je bois un café." } },

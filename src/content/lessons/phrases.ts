@@ -4,6 +4,7 @@ export const phrases: Lesson = {
   id: "phrases",
   title: "Phrases utiles",
   emoji: "💬",
+  level: "A1",
   items: [
     { id: "phrases-01", de: "Sprechen Sie Englisch?", fr: "Parlez-vous anglais ?", gender: null,
       example: { de: "Entschuldigung, sprechen Sie Englisch?", fr: "Excusez-moi, parlez-vous anglais ?" } },
