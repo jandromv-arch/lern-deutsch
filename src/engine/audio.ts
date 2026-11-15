@@ -50,7 +50,15 @@ async function loadBuffer(context: AC, url: string): Promise<AudioBuffer> {
   if (!p) {
     p = fetch(url)
       .then((r) => r.arrayBuffer())
-      .then((bytes) => context.decodeAudioData(bytes))
+      // Callback form, not the promise form: older iOS Safari (<14.1) only
+      // supports the callback signature. The promise form returns undefined
+      // there, which broke the chain and fell back to the system voice.
+      .then((bytes) => new Promise<AudioBuffer>((res, rej) => {
+        const ret = context.decodeAudioData(bytes, res, rej);
+        if (ret && typeof (ret as Promise<AudioBuffer>).then === "function") {
+          (ret as Promise<AudioBuffer>).then(res, rej);
+        }
+      }))
       .then((buf) => { buffers.set(url, buf); pending.delete(url); return buf; })
       .catch((e) => { pending.delete(url); throw e; });
     pending.set(url, p);
