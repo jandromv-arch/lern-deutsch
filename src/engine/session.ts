@@ -4,7 +4,7 @@ import type { VocabItem } from "../content/types";
 export interface Step { itemId: string; type: ExerciseType }
 
 const LESSON_ORDER: ExerciseType[] = ["flashcard", "qcm", "fill", "order"];
-const REVIEW_TYPES: ExerciseType[] = ["qcm", "fill", "order", "type"];
+const REVIEW_TYPES: ExerciseType[] = ["qcm", "fill", "order", "type", "listen"];
 
 export function buildLessonQueue(items: VocabItem[]): Step[] {
   return items.flatMap((item) => LESSON_ORDER.map((type) => ({ itemId: item.id, type })));

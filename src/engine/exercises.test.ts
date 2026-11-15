@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildQcm, buildFill, buildOrder } from "./exercises";
+import { buildQcm, buildListen, buildFill, buildOrder } from "./exercises";
 import type { VocabItem } from "../content/types";
 
 const seq = (nums: number[]) => { let i = 0; return () => nums[i++ % nums.length]; };
@@ -64,5 +64,16 @@ describe("buildOrder", () => {
     expect(o.solution).toEqual(["Hallo", "Welt"]);
     expect([...o.tiles].sort()).toEqual([...o.solution].sort());
     expect(o.promptFr).toBe("Bonjour le monde");
+  });
+});
+
+describe("buildListen", () => {
+  it("audioText is German, answer is French, 4 unique options incl answer", () => {
+    const l = buildListen(item, pool, seq([0, 0, 0]));
+    expect(l.audioText).toBe("Hallo");
+    expect(l.answer).toBe("Bonjour");
+    expect(l.options).toHaveLength(4);
+    expect(new Set(l.options).size).toBe(4);
+    expect(l.options).toContain("Bonjour");
   });
 });

@@ -27,6 +27,7 @@ describe("buildReviewQueue", () => {
     const q = buildReviewQueue(many, () => 0);
     const types = new Set(q.map((s) => s.type));
     expect(types.has("type")).toBe(true);
+    expect(types.has("listen")).toBe(true);
     expect(types.has("flashcard")).toBe(false);
   });
 });

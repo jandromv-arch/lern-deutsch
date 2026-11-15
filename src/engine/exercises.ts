@@ -1,6 +1,6 @@
 import type { VocabItem } from "../content/types";
 
-export type ExerciseType = "flashcard" | "qcm" | "fill" | "order" | "type";
+export type ExerciseType = "flashcard" | "qcm" | "fill" | "order" | "type" | "listen";
 
 function shuffle<T>(arr: T[], rand: () => number): T[] {
   const a = [...arr];
@@ -23,6 +23,14 @@ export function buildQcm(item: VocabItem, pool: VocabItem[], rand: () => number 
   const distractors = pickDistractors(pool, (p) => p.fr === item.fr, 3, rand).map((p) => p.fr);
   const options = shuffle([item.fr, ...distractors], rand);
   return { prompt: item.de, answer: item.fr, options };
+}
+
+export interface Listen { audioText: string; answer: string; options: string[] }
+
+// Same distractor logic as the QCM; the German is heard, never shown.
+export function buildListen(item: VocabItem, pool: VocabItem[], rand: () => number = Math.random): Listen {
+  const q = buildQcm(item, pool, rand);
+  return { audioText: item.de, answer: q.answer, options: q.options };
 }
 
 export interface Fill { sentenceParts: [string, string]; answer: string; options: string[]; ok: boolean }
