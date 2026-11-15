@@ -43,7 +43,12 @@ def synth(voice, text: str, wav_path: str, scale: float):
 
 
 def to_mp3(wav_path: str, mp3_path: str):
-    subprocess.run(["lame", "--silent", "-b", "96", wav_path, mp3_path], check=True)
+    # 44100 Hz MPEG-1 Layer III. Piper outputs 22050 Hz (MPEG-2), which iOS
+    # Safari refuses to decode ("no supported source"); resample to 44.1 kHz.
+    subprocess.run(
+        ["ffmpeg", "-y", "-i", wav_path, "-ar", "44100", "-ac", "1", "-b:a", "96k", mp3_path],
+        check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+    )
 
 
 def main():
