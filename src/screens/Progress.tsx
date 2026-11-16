@@ -2,6 +2,7 @@ import { useActiveContent } from "../hooks/useActiveContent";
 import { useProgress } from "../store/useProgress";
 import { isMastered } from "../engine/leitner";
 import { levelFromXp } from "../engine/xp";
+import { ProfileSwitcher } from "../components/ProfileSwitcher";
 import { LevelBar } from "../components/LevelBar";
 
 const BADGE_LABELS: Record<string, string> = {
@@ -16,6 +17,7 @@ export function Progress() {
   return (
     <div className="p-4 space-y-6">
       <h1 className="text-xl font-bold">Progrès</h1>
+      <ProfileSwitcher />
       <LevelBar xp={xp} />
       <div className="grid grid-cols-3 gap-3 text-center">
         <Stat value={`${mastered}/${allItems.length}`} label="maîtrisés" />

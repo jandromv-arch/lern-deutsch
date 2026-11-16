@@ -8,8 +8,13 @@ import { Progress } from "../screens/Progress";
 import { Dialogue } from "../screens/Dialogue";
 import { DialoguePlay } from "../screens/DialoguePlay";
 import { Grammar } from "../screens/Grammar";
+import { Onboarding } from "../screens/Onboarding";
+import { useAccount } from "../store/useAccount";
 
 export function App() {
+  const profiles = useAccount((s) => s.profiles);
+  const activeId = useAccount((s) => s.activeId);
+  if (!profiles.some((p) => p.id === activeId)) return <Onboarding />;
   return (
     <HashRouter>
       <Routes>
