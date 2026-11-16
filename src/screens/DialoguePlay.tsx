@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { dialogues } from "../content/dialogues";
+import { useActiveContent } from "../hooks/useActiveContent";
 import type { Dialogue } from "../content/dialogueTypes";
 import type { VocabItem } from "../content/types";
 import { AudioButton } from "../components/AudioButton";
@@ -10,6 +10,7 @@ import { useProgress } from "../store/useProgress";
 import { today } from "../app/today";
 
 export function DialoguePlay() {
+  const { dialogues } = useActiveContent();
   const { id } = useParams();
   const d = dialogues.find((x) => x.id === id);
   if (!d) {

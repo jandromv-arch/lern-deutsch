@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { course } from "../content/course";
+import { useActiveContent } from "../hooks/useActiveContent";
 import { buildReviewQueue } from "../engine/session";
 import { useProgress } from "../store/useProgress";
 import { today } from "../app/today";
@@ -7,6 +7,7 @@ import { SessionRunner, type SessionStats } from "./SessionRunner";
 import { Summary } from "./Summary";
 
 export function Review() {
+  const { course } = useActiveContent();
   // Snapshot the queue once on mount: answering advances dueDates, which would
   // otherwise shrink the due set mid-session and skip/unmount steps.
   const [snap] = useState(() => {

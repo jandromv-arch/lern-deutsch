@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { course } from "../content/course";
+import { useActiveContent } from "../hooks/useActiveContent";
 import { buildDailyPlan } from "../engine/daily";
 import { useProgress } from "../store/useProgress";
 import { today } from "../app/today";
@@ -7,6 +7,7 @@ import { SessionRunner, type SessionStats } from "./SessionRunner";
 import { Summary } from "./Summary";
 
 export function Daily() {
+  const { course } = useActiveContent();
   // Snapshot once on mount: answers mutate progress and would reshuffle the plan mid-session.
   const [snap] = useState(() => ({
     plan: buildDailyPlan(course, useProgress.getState(), today()),

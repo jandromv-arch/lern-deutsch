@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
-import { course } from "../content/course";
+import { useActiveContent } from "../hooks/useActiveContent";
 import { GrammarTip } from "../components/GrammarTip";
 
 const LEVELS = ["A1", "A2", "B1"] as const;
 
 export function Grammar() {
+  const { course } = useActiveContent();
   const withTips = course.lessons.filter((l) => l.grammarTip);
   return (
     <div className="p-4 space-y-4">

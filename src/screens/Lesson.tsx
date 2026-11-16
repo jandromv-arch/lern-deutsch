@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { course } from "../content/course";
+import { useActiveContent } from "../hooks/useActiveContent";
 import { buildLessonQueue } from "../engine/session";
 import type { Lesson as Lesson_ } from "../content/types";
 import { useProgress } from "../store/useProgress";
@@ -10,6 +10,7 @@ import { Summary } from "./Summary";
 import { GrammarTip } from "../components/GrammarTip";
 
 export function Lesson() {
+  const { course } = useActiveContent();
   const { id } = useParams();
   const lesson = course.lessons.find((l) => l.id === id);
   if (!lesson) return <div className="p-6">Leçon introuvable.</div>;

@@ -1,4 +1,4 @@
-import { course } from "../content/course";
+import { useActiveContent } from "../hooks/useActiveContent";
 import { useProgress } from "../store/useProgress";
 import { isMastered } from "../engine/leitner";
 import { levelFromXp } from "../engine/xp";
@@ -9,6 +9,7 @@ const BADGE_LABELS: Record<string, string> = {
 };
 
 export function Progress() {
+  const { course } = useActiveContent();
   const { xp, streak, items, badges } = useProgress();
   const allItems = course.lessons.flatMap((l) => l.items);
   const mastered = allItems.filter((it) => items[it.id] && isMastered(items[it.id])).length;

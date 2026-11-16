@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { course } from "../content/course";
+import { useActiveContent } from "../hooks/useActiveContent";
 import { useProgress } from "../store/useProgress";
 import { today } from "../app/today";
 import { LevelBar } from "../components/LevelBar";
@@ -17,6 +17,7 @@ const LEVEL_LABELS: Record<(typeof LEVEL_ORDER)[number], string> = {
 };
 
 export function Home() {
+  const { course } = useActiveContent();
   const { xp, streak, items, dueItemIds, dailyGoal, answeredToday } = useProgress();
   const started = Object.keys(items);
   const dueCount = dueItemIds(started, today()).length;

@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
-import { dialogues } from "../content/dialogues";
+import { useActiveContent } from "../hooks/useActiveContent";
 
 export function Dialogue() {
+  const { dialogues } = useActiveContent();
   return (
     <div className="p-4 space-y-4">
       <header className="flex items-center justify-between">
