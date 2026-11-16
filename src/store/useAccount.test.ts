@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { useAccount } from "./useAccount";
 import { useProgress } from "./useProgress";
 
@@ -39,5 +39,57 @@ describe("useAccount", () => {
     useAccount.getState().removeProfile(b);
     expect(useAccount.getState().activeId).toBeNull();
     expect(useAccount.getState().active()).toBeUndefined();
+  });
+});
+
+describe("useAccount progress cleanup", () => {
+  it("removeProfile drops its slices and moves context off the removed profile", () => {
+    const a = useAccount.getState().createProfile("A", "de", "A1");
+    useProgress.getState().addAnswer(true, "2026-01-01");
+    const b = useAccount.getState().createProfile("B", "de", "A1");
+    useProgress.getState().addAnswer(true, "2026-01-01");
+    useProgress.getState().addAnswer(true, "2026-01-01");
+    useAccount.getState().removeProfile(b);
+    const p = useProgress.getState();
+    expect(Object.keys(p.slices).some((k) => k.startsWith(`${b}:`))).toBe(false);
+    expect(p.activeKey).toBe(`${a}:de`);
+    expect(p.xp).toBe(useProgress.getState().slices[`${a}:de`]?.xp ?? p.xp);
+    expect(Object.keys(p.slices).some((k) => k.startsWith(`${b}:`))).toBe(false);
+  });
+  it("removing the only profile leaves a fresh default context", () => {
+    const a = useAccount.getState().createProfile("A", "de", "A1");
+    useProgress.getState().addAnswer(true, "2026-01-01");
+    useAccount.getState().removeProfile(a);
+    const p = useProgress.getState();
+    expect(Object.keys(p.slices).some((k) => k.startsWith(`${a}:`))).toBe(false);
+    expect(p.activeKey).toBe("p-default:de");
+    expect(useAccount.getState().activeId).toBeNull();
+  });
+});
+
+describe("legacy seeding on rehydrate", () => {
+  async function boot(blob?: unknown) {
+    localStorage.clear();
+    if (blob) localStorage.setItem("lern-deutsch-v1", JSON.stringify(blob));
+    vi.resetModules();
+    const mod = await import("./useAccount");
+    await Promise.resolve();
+    await Promise.resolve();
+    return mod.useAccount;
+  }
+  it("seeds a Moi profile for legacy users", async () => {
+    const acc = await boot({
+      state: { items: { x: { box: 1, nextDue: "2026-01-01" } }, xp: 40 },
+      version: 2,
+    });
+    const s = acc.getState();
+    expect(s.profiles).toHaveLength(1);
+    expect(s.profiles[0].name).toBe("Moi");
+    expect(s.activeId).toBe("p-default");
+  });
+  it("keeps a brand-new user profile-less", async () => {
+    const acc = await boot();
+    expect(acc.getState().profiles).toEqual([]);
+    expect(acc.getState().activeId).toBeNull();
   });
 });

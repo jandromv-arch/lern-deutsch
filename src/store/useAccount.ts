@@ -21,6 +21,11 @@ interface AccountState {
   removeProfile: (id: string) => void;
 }
 
+function hasLegacyProgress(): boolean {
+  const sl = useProgress.getState().slices?.["p-default:de"];
+  return !!sl && (Object.keys(sl.items || {}).length > 0 || (sl.xp || 0) > 0);
+}
+
 export const useAccount = create<AccountState>()(
   persist(
     (set, get) => ({
@@ -44,27 +49,31 @@ export const useAccount = create<AccountState>()(
         set({ profiles: get().profiles.map((p) => (p.id === id ? { ...p, lang } : p)) });
         if (get().activeId === id) useProgress.getState().setContext(id, lang);
       },
-      removeProfile: (id) =>
-        set({
-          profiles: get().profiles.filter((p) => p.id !== id),
-          activeId: get().activeId === id ? null : get().activeId,
-        }),
+      removeProfile: (id) => {
+        const wasActive = get().activeId === id;
+        const profiles = get().profiles.filter((p) => p.id !== id);
+        set({ profiles, activeId: wasActive ? null : get().activeId });
+        useProgress.getState().dropProfile(id);
+        if (wasActive && profiles.length > 0) get().setActive(profiles[0].id);
+      },
     }),
     {
       name: "lern-accounts-v1",
       version: 1,
       partialize: (s) => ({ profiles: s.profiles, activeId: s.activeId }),
       // Existing installs: legacy progress lives in slice "p-default:de" but no profile exists yet.
-      onRehydrateStorage: () => (state) => {
-        if (!state || state.profiles.length > 0) return;
-        const pr = useProgress.getState();
-        const legacy = pr.slices["p-default:de"] ?? pr;
-        if (legacy.xp > 0 || Object.keys(legacy.items).length > 0) {
-          useAccount.setState({
-            profiles: [{ id: "p-default", name: "Moi", lang: "de", level: "A1", createdAt: Date.now() }],
-            activeId: "p-default",
-          });
-        }
+      onRehydrateStorage: () => () => {
+        // Deferred: useAccount is not assigned yet while rehydrating synchronously.
+        queueMicrotask(() => {
+          const s = useAccount.getState();
+          if (s.profiles.length === 0 && hasLegacyProgress()) {
+            const id = "p-default";
+            useAccount.setState({
+              profiles: [{ id, name: "Moi", lang: "de", level: "A1", createdAt: Date.now() }],
+              activeId: id,
+            });
+          }
+        });
       },
     }
   )

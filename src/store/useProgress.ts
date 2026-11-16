@@ -25,6 +25,7 @@ interface ProgressState {
   slices: Record<string, Slice>;
   activeKey: string;
   setContext: (profileId: string, lang: string) => void;
+  dropProfile: (profileId: string) => void;
   items: Record<string, ItemProgress>;
   xp: number;
   streak: Streak;
@@ -113,6 +114,17 @@ export const useProgress = create<ProgressState>()(
         if (key === s.activeKey) return;
         const slices = { ...s.slices, [s.activeKey]: pickSlice(s) };
         set({ slices, activeKey: key, ...(slices[key] ?? freshSlice()) });
+      },
+      dropProfile: (profileId) => {
+        const s = get();
+        const slices = Object.fromEntries(
+          Object.entries(s.slices).filter(([k]) => !k.startsWith(`${profileId}:`))
+        );
+        if (s.activeKey.startsWith(`${profileId}:`)) {
+          set({ slices, activeKey: DEFAULT_KEY, ...(slices[DEFAULT_KEY] ?? freshSlice()) });
+        } else {
+          set({ slices });
+        }
       },
       startSession: () => commit(set, get, { consecutiveCorrect: 0 }),
       addAnswer: (correct, today) => {
