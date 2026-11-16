@@ -10,7 +10,21 @@ interface Streak {
   lastDay: string | null;
 }
 
+export interface Slice {
+  items: Record<string, ItemProgress>;
+  xp: number;
+  streak: Streak;
+  badges: string[];
+  consecutiveCorrect: number;
+  daily: { day: string; count: number };
+}
+
+export const DEFAULT_KEY = "p-default:de";
+
 interface ProgressState {
+  slices: Record<string, Slice>;
+  activeKey: string;
+  setContext: (profileId: string, lang: string) => void;
   items: Record<string, ItemProgress>;
   xp: number;
   streak: Streak;
@@ -37,20 +51,32 @@ interface ProgressState {
 
 const initialSettings = {
   dailyGoal: 15,
-  daily: { day: "", count: 0 } as { day: string; count: number },
   soundOn: true,
   themePref: "system" as ThemePref,
   reminderTime: "19:00",
 };
 
-const initial = {
-  ...initialSettings,
-  items: {} as Record<string, ItemProgress>,
-  xp: 0,
-  streak: { count: 0, lastDay: null } as Streak,
-  badges: [] as string[],
-  consecutiveCorrect: 0,
-};
+function freshSlice(): Slice {
+  return {
+    items: {},
+    xp: 0,
+    streak: { count: 0, lastDay: null },
+    badges: [],
+    consecutiveCorrect: 0,
+    daily: { day: "", count: 0 },
+  };
+}
+
+function pickSlice(s: Slice): Slice {
+  return {
+    items: s.items,
+    xp: s.xp,
+    streak: s.streak,
+    badges: s.badges,
+    consecutiveCorrect: s.consecutiveCorrect,
+    daily: s.daily,
+  };
+}
 
 function earnedBadges(
   badges: string[],
@@ -65,16 +91,35 @@ function earnedBadges(
   return [...earned];
 }
 
+function commit(
+  set: (p: Partial<ProgressState>) => void,
+  get: () => ProgressState,
+  patch: Partial<Slice>
+) {
+  const next = pickSlice({ ...get(), ...patch });
+  set({ ...next, slices: { ...get().slices, [get().activeKey]: next } });
+}
+
 export const useProgress = create<ProgressState>()(
   persist(
     (set, get) => ({
-      ...initial,
-      startSession: () => set({ consecutiveCorrect: 0 }),
+      ...initialSettings,
+      ...freshSlice(),
+      slices: {},
+      activeKey: DEFAULT_KEY,
+      setContext: (profileId, lang) => {
+        const key = `${profileId}:${lang}`;
+        const s = get();
+        if (key === s.activeKey) return;
+        const slices = { ...s.slices, [s.activeKey]: pickSlice(s) };
+        set({ slices, activeKey: key, ...(slices[key] ?? freshSlice()) });
+      },
+      startSession: () => commit(set, get, { consecutiveCorrect: 0 }),
       addAnswer: (correct, today) => {
         const s = get();
         const xp = correct ? s.xp + answerXp(s.consecutiveCorrect) : s.xp;
         const streak = correct ? nextStreak(s.streak, today) : s.streak;
-        set({
+        commit(set, get, {
           xp,
           streak,
           badges: earnedBadges(s.badges, s.items, xp, streak),
@@ -96,24 +141,36 @@ export const useProgress = create<ProgressState>()(
       recordItem: (itemId, correct, today) => {
         const s = get();
         const items = { ...s.items, [itemId]: nextProgress(s.items[itemId], correct, today) };
-        set({ items, badges: earnedBadges(s.badges, items, s.xp, s.streak) });
+        commit(set, get, { items, badges: earnedBadges(s.badges, items, s.xp, s.streak) });
       },
       awardBadge: (id) => {
         const s = get();
-        if (!s.badges.includes(id)) set({ badges: [...s.badges, id] });
+        if (!s.badges.includes(id)) commit(set, get, { badges: [...s.badges, id] });
       },
       masteredCount: () => Object.values(get().items).filter(isMastered).length,
       dueItemIds: (allIds, today) => allIds.filter((id) => isDue(get().items[id], today)),
-      reset: () => set({ ...initial }),
+      reset: () => commit(set, get, freshSlice()),
     }),
     {
       name: "lern-deutsch-v1",
-      version: 2,
-      // Additive: keep persisted data, fill any missing new fields with defaults.
-      migrate: (persisted: unknown) => ({
-        ...initialSettings,
-        ...((persisted && typeof persisted === "object" ? persisted : {}) as object),
-      }) as ProgressState,
+      version: 3,
+      migrate: (persisted: unknown) => {
+        const p = (persisted && typeof persisted === "object" ? persisted : {}) as Record<string, unknown>;
+        const base = { ...initialSettings, ...p } as unknown as ProgressState;
+        if (p.items && !p.slices) {
+          const fresh = freshSlice();
+          const slice: Slice = {
+            items: (p.items as Slice["items"]) ?? fresh.items,
+            xp: (p.xp as number) ?? fresh.xp,
+            streak: (p.streak as Streak) ?? fresh.streak,
+            badges: (p.badges as string[]) ?? fresh.badges,
+            consecutiveCorrect: (p.consecutiveCorrect as number) ?? fresh.consecutiveCorrect,
+            daily: (p.daily as Slice["daily"]) ?? fresh.daily,
+          };
+          return { ...base, slices: { [DEFAULT_KEY]: slice }, activeKey: DEFAULT_KEY, ...slice } as ProgressState;
+        }
+        return { ...freshSlice(), ...base, slices: base.slices ?? {}, activeKey: base.activeKey ?? DEFAULT_KEY } as ProgressState;
+      },
     }
   )
 );
