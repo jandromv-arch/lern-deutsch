@@ -22,6 +22,6 @@ export interface Lesson {
 export interface Course {
   id: string;
   from: "fr";
-  to: "de";
+  to: "de" | "en";
   lessons: Lesson[];
 }
