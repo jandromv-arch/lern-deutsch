@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useActiveContent } from "../hooks/useActiveContent";
+import { getLanguage } from "../content/languages";
 import { useProgress } from "../store/useProgress";
 import { today } from "../app/today";
 import { LevelBar } from "../components/LevelBar";
@@ -17,7 +18,8 @@ const LEVEL_LABELS: Record<(typeof LEVEL_ORDER)[number], string> = {
 };
 
 export function Home() {
-  const { course } = useActiveContent();
+  const { lang, course } = useActiveContent();
+  const activeLang = getLanguage(lang);
   const { xp, streak, items, dueItemIds, dailyGoal, answeredToday } = useProgress();
   const started = Object.keys(items);
   const dueCount = dueItemIds(started, today()).length;
@@ -37,7 +39,7 @@ export function Home() {
     <div className="p-4 space-y-5">
       <header className="space-y-2">
         <div className="flex justify-between items-center">
-          <h1 className="text-xl font-bold">Lern Deutsch 🇩🇪</h1>
+          <h1 className="text-xl font-bold">{activeLang.flag} {activeLang.label}</h1>
           <HeaderControls />
         </div>
         <div className="flex items-center gap-3">
